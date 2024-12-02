@@ -18,7 +18,7 @@ This repository contains an Infrastructure-as-Code (IaC) setup for deploying Geo
 To use this setup, ensure the following are installed on your system:
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- Remember to add your user to the `docker` group. This [Digital Ocean Tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04#step-2-executing-the-docker-command-without-sudo-optional) will help
+- Ensure that your user has been added to the docker group to run Docker commands without sudo. For guidance, refer to this [Digital Ocean Tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04#step-2-executing-the-docker-command-without-sudo-optional).
 
 ### Installation
 
@@ -35,6 +35,7 @@ To use this setup, ensure the following are installed on your system:
      export GEOSERVER_ADMIN_PASSWORD=your_secret_passowrd
      export DOMAIN_NAME='geoserver-site.org'
      ```
+   Alternatively, you may use a `.env` file.
 3. **Install snapd**:
    ```bash
    sudo apt update
@@ -55,30 +56,45 @@ To use this setup, ensure the following are installed on your system:
    sudo ln -s /snap/bin/certbot /usr/bin/certbot
    ```
 7. **Generate certificate for your domain name**:
-   Pri=ovide your email when prompted and agree to the terms. You don't have to sign-up for the newsletter though.
    ```bash
    sudo certbot certonly --standalone
    ```
+   Provide your email when prompted and agree to the terms. You don't have to sign-up for the newsletter though.
+8. **Edit the `docker-compose.yml`**:
+   Change `/etc/letsencrypt/live/geoafrikana.name.ng/` to the directory of your certbot keys
 
 
-
-3. **Start the services**:
+9. **Start the services**:
    ```bash
    docker-compose up -d
    ```
 
-4. **Access GeoServer**:
-   - Open your browser and go to `http://localhost/geoserver`.
-   - Log in using the credentials defined in your `.env` file.
+10. **Configure Proxy Base URL**:
+   For security reasons, Geoserver must know which address its served from.
+   Log in to GeoServer at http://your_domain.com:8080/geoserver. Once logged in, navigate to Settings > Global Settings and enter https://your_domain.com/geoserver/ as the Proxy Base URL.
+   Ensure that your server's port 8080 is open.
 
----
+11. **Confirm SSL**:
+   - Open `https://your_domain.com/geoserver` 
+   - Sign out if you're still signed in from he previous step.
+   - Sign in to confirm your settings worked.
 
-## Configuration
+12. **Trigger Nginx Reload on Certbot Renewal**:
+   Certbot allows us to hook into the certificate lifecycle by placing scripts in `/etc/letsencrypt/renewal-hooks/(deploy|post|pre)`.
+   - Set the environment variable for the nginx container as defined in docker-compose.yml
+   ```bash
+   export $nginx_name=nginx_container
+   ``` 
+   - Copy the nginx reload script to the `post` dir:
+   ```bash
+   sudo cp reload-geoserver-nginx.sh /etc/letsencrypt/renewal-hooks/post/geoserver-nginx.sh
+   ```
+   - Reload the system daemon:
+   ```bash
+   sudo systemctl daemon-reload
+   ```
 
-### Environment Variables
-The `.env` file allows you to configure the deployment:
-- `GEOSERVER_ADMIN_USERNAME`: Admin username for GeoServer.
-- `GEOSERVER_ADMIN_PASSWORD`: Admin password for GeoServer.
+# 🎉🎉🎉 Happy Hacking 🎉🎉🎉
 
 ### NGINX Configuration
 The `nginx.conf` file contains the proxy setup for NGINX:
