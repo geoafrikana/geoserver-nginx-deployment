@@ -29,15 +29,38 @@ To use this setup, ensure the following are installed on your system:
    ```
 
 2. **Set up environment variables**:
-   - Copy the `.env.template` file to `.env`:
+   Set the environment variables:
      ```bash
-     cp .env.template .env
+     export GEOSERVER_ADMIN_USERNAME=your_username
+     export GEOSERVER_ADMIN_PASSWORD=your_secret_passowrd
+     export DOMAIN_NAME='geoserver-site.org'
      ```
-   - Edit the `.env` file and configure the variables:
-     ```
-     GEOSERVER_ADMIN_USERNAME=your_username
-     GEOSERVER_ADMIN_PASSWORD=your_secret_password
-     ```
+3. **Install snapd**:
+   ```bash
+   sudo apt update
+   sudo apt install snapd
+   ```
+
+4. **Uninstall certbot if already present**:
+   Replace apt-get with `yum` or `dnf` depending on your package manager
+   ```bash
+   sudo apt-get remove certbot
+   ```
+5. **Install Certbot with snap**:
+   ```bash
+   sudo snap install --classic certbot
+   ```
+6. **Confirm that Certbot works**:
+   ```bash
+   sudo ln -s /snap/bin/certbot /usr/bin/certbot
+   ```
+7. **Generate certificate for your domain name**:
+   Pri=ovide your email when prompted and agree to the terms. You don't have to sign-up for the newsletter though.
+   ```bash
+   sudo certbot certonly --standalone
+   ```
+
+
 
 3. **Start the services**:
    ```bash
