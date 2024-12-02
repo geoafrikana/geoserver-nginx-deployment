@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   geoserver:
     image: kartoza/geoserver:2.26.1
