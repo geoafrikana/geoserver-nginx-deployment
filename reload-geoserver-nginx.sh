@@ -1,3 +1,3 @@
 echo 'reloading nginx'
-docker exec $nginx_name nginx -s reload
+docker exec nginx_container nginx -s reload
 echo 'reloaded nginx'

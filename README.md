@@ -28,15 +28,7 @@ To use this setup, ensure the following are installed on your system:
    cd geoserver-nginx-deployment
    ```
 
-2. **Set up environment variables**:
-   Set the environment variables:
-     ```bash
-     export GEOSERVER_ADMIN_USERNAME=your_username
-     export GEOSERVER_ADMIN_PASSWORD=your_secret_passowrd
-     export DOMAIN_NAME='geoserver-site.org'
-     ```
-   Alternatively, you may use a `.env` file.
-3. **Install snapd**:
+2. **Install snapd**:
    ```bash
    sudo apt update
    sudo apt install snapd
@@ -81,10 +73,6 @@ To use this setup, ensure the following are installed on your system:
 
 12. **Trigger Nginx Reload on Certbot Renewal**:
    Certbot allows us to hook into the certificate lifecycle by placing scripts in `/etc/letsencrypt/renewal-hooks/(deploy|post|pre)`.
-   - Set the environment variable for the nginx container as defined in docker-compose.yml
-   ```bash
-   export $nginx_name=nginx_container
-   ``` 
    - Copy the nginx reload script to the `post` dir:
    ```bash
    sudo cp reload-geoserver-nginx.sh /etc/letsencrypt/renewal-hooks/post/geoserver-nginx.sh
